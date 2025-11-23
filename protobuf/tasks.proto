@@ -1,0 +1,71 @@
+syntax = "proto3";
+package protobuf;
+
+option go_package = "todo-grpc-go/protobuf";
+service TaskService {
+    rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse) {}
+    rpc GetTasks(GetTasksRequest) returns (GetTasksResponse) {}
+    rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskResponse) {}
+    rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse) {}
+    rpc DeleteTasks(DeleteTasksRequest) returns (DeleteTasksResponse) {}
+}
+
+message Task {
+    int32 ID = 1;
+    string Name = 2;
+    string Due = 3;
+    bool Done = 4;
+}
+
+message CreateTaskRequest {
+    string Name = 1;
+    string Due = 2;
+}
+
+message CreateTaskResponse {
+    int32 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message GetTasksRequest {}
+
+message GetTasksResponse {
+    int32 id = 1;
+    bool success = 2;
+    string message = 3;
+    repeated Task tasks = 4;
+}
+
+message UpdateTaskRequest {
+    int32 ID = 1;
+    string Name = 2;
+    string Due = 3;
+    bool Done = 4;
+}
+
+message UpdateTaskResponse {
+    int32 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message DeleteTaskRequest {
+    int32 ID = 1;
+}
+
+message DeleteTaskResponse {
+    int32 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message DeleteTasksRequest {}
+
+message DeleteTasksResponse {
+    int32 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message Empty {}
