@@ -29,7 +29,7 @@ export default function App() {
   const GetTasks = async () => {
     try {
       const response = await axios.get("todos");
-      setTasks(response.data)
+      setTasks(response.data ? response.data : [])
     } catch (err) {
       console.log(err);
       setTasks([]);
