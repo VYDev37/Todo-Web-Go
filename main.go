@@ -49,9 +49,9 @@ func main() {
 	httpServer.RegisterRoutes(mux)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", serverPort), routes.AllowCORS(mux)); err != nil {
-		log.Fatalf("An error occured when trying to make new grpc client: %v\n", err)
+		log.Fatalf("An error occured when trying to run http: %v\n", err)
 		return
 	}
 
-	//fmt.Printf("HTTP is running in port %d.\n", serverPort)
+	fmt.Printf("HTTP is running in port %d.\n", serverPort)
 }
