@@ -48,10 +48,9 @@ func main() {
 	mux := http.NewServeMux()
 	httpServer.RegisterRoutes(mux)
 
+        fmt.Printf("HTTP is running in port %d.\n", serverPort)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", serverPort), routes.AllowCORS(mux)); err != nil {
 		log.Fatalf("An error occured when trying to run http: %v\n", err)
 		return
 	}
-
-	fmt.Printf("HTTP is running in port %d.\n", serverPort)
 }
