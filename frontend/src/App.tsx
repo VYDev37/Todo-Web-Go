@@ -173,48 +173,63 @@ export default function App() {
             </div>
             <button disabled={loading} onClick={(e) => DeleteAllButton(e)} className="btn-danger">DELETE ALL</button>
           </div>
-          <table className="table-auto w-full mt-5 border border-black border-collapse">
-            <thead>
-              <tr>
-                <th className="table-cell">ID</th>
-                <th className="table-cell">TASK</th>
-                <th className="table-cell">DUE DATE</th>
-                <th className="table-cell">STATUS</th>
-                <th className="table-cell">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody className="text-center">
-              {
+          <table className="sm:table w-full mt-5 border border-black border-collapse">
+        <thead className="hidden sm:table-header-group">
+            <tr>
+                <th className="table-cell border border-black p-2">ID</th>
+                <th className="table-cell border border-black p-2">TASK</th>
+                <th className="table-cell border border-black p-2">DUE DATE</th>
+                <th className="table-cell border border-black p-2">STATUS</th>
+                <th className="table-cell border border-black p-2">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody className="text-center">
+            {
                 filteredTasks.length > 0 ?
-                  filteredTasks.map(task => (
-                    <tr key={task.ID} className="hover:bg-gray-50">
-                      <td className="table-cell">{task.ID}</td>
-                      <td className="table-cell">
-                        <input type="text" onChange={(e) => ModifyTask(task.ID, "Name", e.target.value)} value={task.Name} className="text-center" disabled={!task.editing} />
-                      </td>
-                      <td className="table-cell">
-                        <input type="date" onChange={(e) => ModifyTask(task.ID, "Due", e.target.value)} value={task.Due} disabled={!task.editing} />
-                      </td>
-                      <td className="table-cell">
-                        <input type="checkbox" onChange={(e) => ModifyTask(task.ID, "Done", e.target.checked)} checked={task.Done} disabled={!task.editing} />
-                      </td>
-                      <td className="table-cell">
-                        <div className="mx-auto">
-                          <button disabled={loading} onClick={(e) => EditButton(e, task.ID)}
-                            className={`px-3 py-1 rounded text-white text-1xl font-bold transition-colors ${task.editing ? 'bg-green-500 hover:bg-green-600' : 'btn-primary'
-                              }`}>{task.editing ? "SAVE" : "EDIT"}</button>
-                          <button disabled={loading} onClick={(e) => DeleteButton(e, task.ID)} className="btn-danger mx-1">DELETE</button>
-                        </div>
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr>
-                      <td colSpan={5} className="px-2 py-1">No data available.</td>
-                    </tr>
-                  )
-              }
-            </tbody>
-          </table>
+                    filteredTasks.map(task => (
+                        <tr key={task.ID} className="flex flex-col sm:table-row mb-4 sm:mb-0 border border-gray-300 rounded-lg shadow-sm p-2 hover:bg-gray-50">
+                            <td className="flex justify-between sm:table-cell text-right sm:text-center p-2 border-b sm:border-b-0">
+                                <span className="font-bold sm:hidden text-left">ID:</span>
+                                {task.ID}
+                            </td>
+                            
+                            {/* CELL: TASK */}
+                            <td className="flex justify-between sm:table-cell text-right sm:text-center p-2 border-b sm:border-b-0">
+                                <span className="font-bold sm:hidden text-left">TASK:</span> 
+                                <input type="text" onChange={(e) => ModifyTask(task.ID, "Name", e.target.value)} value={task.Name} className="text-right sm:text-center w-auto" disabled={!task.editing} />
+                            </td>
+                            
+                            {/* CELL: DUE DATE */}
+                            <td className="flex justify-between sm:table-cell text-right sm:text-center p-2 border-b sm:border-b-0">
+                                <span className="font-bold sm:hidden text-left">DUE DATE:</span> {/* LABEL BARU */}
+                                <input type="date" onChange={(e) => ModifyTask(task.ID, "Due", e.target.value)} value={task.Due} disabled={!task.editing} className="text-right" />
+                            </td>
+                            
+                            {/* CELL: STATUS */}
+                            <td className="flex justify-between sm:table-cell text-right sm:text-center p-2 border-b sm:border-b-0">
+                                <span className="font-bold sm:hidden text-left">STATUS:</span> {/* LABEL BARU */}
+                                <input type="checkbox" onChange={(e) => ModifyTask(task.ID, "Done", e.target.checked)} checked={task.Done} disabled={!task.editing} className="mt-1" />
+                            </td>
+                            
+                            {/* CELL: ACTIONS */}
+                            <td className="sm:table-cell p-2">
+                                {/* Hapus flex/justify-between dari TD, pindahkan ke div di dalamnya agar tombol tidak terpisah aneh */}
+                                <div className="flex justify-center sm:justify-center mt-2 sm:mt-0">
+                                    <button disabled={loading} onClick={(e) => EditButton(e, task.ID)}
+                                        className={`px-3 py-1 rounded text-white text-1xl font-bold transition-colors ${task.editing ? 'bg-green-500 hover:bg-green-600' : 'btn-primary'
+                                            }`}>{task.editing ? "SAVE" : "EDIT"}</button>
+                                    <button disabled={loading} onClick={(e) => DeleteButton(e, task.ID)} className="btn-danger mx-1">DELETE</button>
+                                </div>
+                            </td>
+                        </tr>
+                    )) : (
+                        <tr>
+                            <td colSpan={5} className="px-2 py-1">No data available.</td>
+                        </tr>
+                    )
+            }
+        </tbody>
+    </table>
         </div>
       </div>
     </div>
