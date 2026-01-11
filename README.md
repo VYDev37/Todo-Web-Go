@@ -22,3 +22,4 @@
 
 ## Changed
 - PATCH Router + Mark as done -> Massive Delete + another DELETE route
+- Offline database (JSON) -> Online database (PostgreSQL) due to Serverless demand for testing

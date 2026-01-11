@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 	routes "todo-rest-go/routes"
@@ -19,12 +20,9 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		mux = http.NewServeMux()
 
 		manager = &model.TaskManager{}
-		manager.SetFile("tasks.json")
-
-		// if err := manager.Load(); err != nil {
-		// 	fmt.Printf("Warning: Failed to load data with error: %v", err)
-		// }
-		_ = manager.Load()
+		if err := manager.Load(); err != nil {
+			fmt.Printf("Warning: Failed to load data with error: %v", err)
+		}
 
 		server := routes.CreateAPIServer(manager)
 		server.RegisterRoutes(mux)

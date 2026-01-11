@@ -1,11 +1,13 @@
 package model
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"strings"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type TaskEditor interface {
@@ -22,32 +24,22 @@ type TaskEditor interface {
 }
 
 type TaskManager struct {
-	taskList []Task
-	fileName string
+	db *gorm.DB
 } // receiver of TaskEditor
 
 func (tm *TaskManager) Load() error {
-	data, err := os.ReadFile(tm.fileName)
-
-	if errors.Is(err, os.ErrNotExist) {
-		empty := []map[string]Task{}
-		data, err := json.Marshal(empty)
-		if err != nil {
-			return fmt.Errorf("error when trying to write new file: %v", err.Error())
-		}
-
-		os.WriteFile(tm.fileName, data, 0644)
-		fmt.Printf("File %s does not exist, creating one...\n", tm.fileName)
-
-		return nil
+	connStr := os.Getenv("SUPABASE_URL")
+	if connStr == "" {
+		return errors.New("SUPABASE_URL environment variable is not set")
 	}
+
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("error when trying to read file: %v", err.Error())
+		return fmt.Errorf("failed to connect database: %v", err)
 	}
 
-	if err := json.Unmarshal(data, &tm.taskList); err != nil {
-		return fmt.Errorf("error when trying to parse data: %v", err.Error())
-	}
+	db.AutoMigrate(&Task{})
+	tm.db = db
 
 	return nil
 }
@@ -60,89 +52,41 @@ func (tm *TaskManager) Add(name string, due string) error {
 		return errors.New("Task due date must not be empty")
 	}
 
-	var newId int16 = 1
-	if len(tm.taskList) > 0 {
-		newId = tm.taskList[len(tm.taskList)-1].ID + 1
-	}
-
-	tm.taskList = append(tm.taskList, Task{
-		ID:   newId, // for safety
+	task := Task{
 		Name: name,
 		Due:  due,
-		Done: false,
-	})
-
-	if err := tm.Save(); err != nil {
-		return err
 	}
 
-	fmt.Println("Saved tasks!")
-	return nil
+	res := tm.db.Create(&task)
+	return res.Error
 }
 
 func (tm *TaskManager) Get() []Task {
-	return tm.taskList
+	var tasks []Task
+	tm.db.Order("id asc").Find(&tasks)
+	return tasks
 }
 
 func (tm *TaskManager) Remove(id int16) error {
-	for i, task := range tm.taskList {
-		if task.ID == id {
-			tm.taskList = append(tm.taskList[:i], tm.taskList[i+1:]...) // remove element on array based on index
-			if err := tm.Save(); err != nil {
-				return err
-			}
-			return nil
-		}
-	}
-
-	return fmt.Errorf("task #%d not found", id)
+	result := tm.db.Delete(&Task{}, id)
+	return result.Error
 }
 
 func (tm *TaskManager) RemoveAll() error {
-	tm.taskList = tm.taskList[:0]
-	// sve
-	if err := tm.Save(); err != nil {
-		return err
-	}
-
-	return nil
+	result := tm.db.Where("1 = 1").Delete(&Task{})
+	return result.Error
 }
 
 func (tm *TaskManager) Update(id int16, name string, due string, done bool) error {
-	for i, task := range tm.taskList {
-		if task.ID == id {
-			tm.taskList[i].Name = name
-			tm.taskList[i].Due = due
-			tm.taskList[i].Done = done
-
-			if err := tm.Save(); err != nil {
-				return err
-			}
-
-			return nil
-		}
-	}
-	return fmt.Errorf("task #%d not found", id)
-}
-
-func (tm *TaskManager) SetFile(name string) error {
-	if strings.TrimSpace(name) == "" || !strings.HasSuffix(name, ".json") {
-		return errors.New("file extension must be json")
+	var task Task
+	if err := tm.db.First(&task, id).Error; err != nil {
+		return fmt.Errorf("task #%d not found", id)
 	}
 
-	tm.fileName = name
-	return nil
-}
+	task.Name = name
+	task.Due = due
+	task.Done = done
 
-func (tm *TaskManager) Save() error {
-	data, err := json.MarshalIndent(tm.taskList, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error when marshalling json: %v", err.Error())
-	}
-
-	if err := os.WriteFile(tm.fileName, data, 0644); err != nil {
-		return fmt.Errorf("error when triyng to write json into file: %v", (err.Error()))
-	}
-
-	return nil
+	result := tm.db.Save(&task)
+	return result.Error
 }
