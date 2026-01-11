@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: `http://${window.location.hostname}:${import.meta.env.VITE_API_PORT || 8080}/`,
+    baseURL: `https://todo-web-go-14fk.vercel.app/api/`,
     headers: {
         'Content-Type': 'application/json',
     }

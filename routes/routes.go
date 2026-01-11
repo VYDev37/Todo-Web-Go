@@ -133,13 +133,13 @@ func (server *APIServer) HandleUpdateTodo(res http.ResponseWriter, req *http.Req
 }
 
 func (server *APIServer) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /hello", func(res http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc("GET /api/hello", func(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, "Hello world!")
 	})
 
-	mux.HandleFunc("GET /todos", server.HandleGetTodo)
-	mux.HandleFunc("POST /add-todo", server.HandleAddTodo)
-	mux.HandleFunc("DELETE /todo/{id}", server.HandleDeleteTodo)
-	mux.HandleFunc("DELETE /todos", server.HandleDeleteAll)
-	mux.HandleFunc("PUT /todo/{id}", server.HandleUpdateTodo)
+	mux.HandleFunc("GET /api/todos", server.HandleGetTodo)
+	mux.HandleFunc("POST /api/add-todo", server.HandleAddTodo)
+	mux.HandleFunc("DELETE /api/todo/{id}", server.HandleDeleteTodo)
+	mux.HandleFunc("DELETE /api/todos", server.HandleDeleteAll)
+	mux.HandleFunc("PUT /api/todo/{id}", server.HandleUpdateTodo)
 }
