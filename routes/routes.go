@@ -133,7 +133,7 @@ func (server *APIServer) HandleUpdateTodo(res http.ResponseWriter, req *http.Req
 }
 
 func (server *APIServer) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /", func(res http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc("GET /hello", func(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, "Hello world!")
 	})
 
