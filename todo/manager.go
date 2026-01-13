@@ -34,7 +34,7 @@ func (tm *TaskManager) Load() error {
 		return errors.New("SUPABASE_URL environment variable is not set")
 	}
 
-	fmt.Println(connStr)
+	//fmt.Println(connStr)
 
 	db, err := gorm.Open(postgres.New(postgres.Config{DSN: connStr, PreferSimpleProtocol: true}), &gorm.Config{})
 	if err != nil {

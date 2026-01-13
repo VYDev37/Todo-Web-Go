@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	todo "todo-rest-go/todo"
 )
@@ -138,7 +137,7 @@ func (server *APIServer) HandleUpdateTodo(res http.ResponseWriter, req *http.Req
 func (server *APIServer) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/hello", func(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, "Hello world!")
-		fmt.Fprint(res, os.Getenv("SUPABASE_URL"))
+		//fmt.Fprint(res, os.Getenv("SUPABASE_URL"))
 	})
 
 	mux.HandleFunc("GET /api/todos", server.HandleGetTodo)
