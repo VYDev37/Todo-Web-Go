@@ -36,7 +36,7 @@ func (tm *TaskManager) Load() error {
 
 	fmt.Println(connStr)
 
-	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
+	db, err := gorm.Open(postgres.New(postgres.Config{DSN: connStr, PreferSimpleProtocol: true}), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("failed to connect database: %v", err)
 	}
