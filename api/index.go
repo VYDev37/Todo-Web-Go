@@ -31,4 +31,9 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	// cors handler
 	corsHandler := routes.AllowCORS(mux)
 	corsHandler.ServeHTTP(res, req)
+
+	if manager == nil {
+		http.Error(res, "Failed to initialize manager and database", 500)
+		return
+	}
 }

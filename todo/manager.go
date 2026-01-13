@@ -29,10 +29,12 @@ type TaskManager struct {
 
 func (tm *TaskManager) Load() error {
 	connStr := os.Getenv("SUPABASE_URL")
-	fmt.Println(connStr)
+
 	if connStr == "" {
 		return errors.New("SUPABASE_URL environment variable is not set")
 	}
+
+	fmt.Println(connStr)
 
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
