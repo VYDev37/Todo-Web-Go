@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	todo "todo-rest-go/todo"
 )
@@ -60,6 +61,8 @@ func (server *APIServer) HandleGetTodo(res http.ResponseWriter, req *http.Reques
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
+
+	SendMessage(res, 200, os.Getenv("SUPABASE_URL"))
 
 	if err := json.NewEncoder(res).Encode(taskList); err != nil {
 		http.Error(res, fmt.Sprintf("Failed to retrieve data: %v.", err), http.StatusInternalServerError)
