@@ -38,8 +38,14 @@ func (tm *TaskManager) Load() error {
 		return fmt.Errorf("failed to connect database: %v", err)
 	}
 
-	db.AutoMigrate(&Task{})
 	tm.db = db
+	sqlDB, _ := tm.db.DB()
+	sqlDB.SetMaxOpenConns(1)
+	sqlDB.SetMaxIdleConns(1)
+
+	if err := db.AutoMigrate(&Task{}); err != nil {
+		return fmt.Errorf("automigrate gagal: %v", err)
+	}
 
 	return nil
 }
