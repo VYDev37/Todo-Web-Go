@@ -70,10 +70,18 @@ func (tm *TaskManager) Add(name string, due string) error {
 	return res.Error
 }
 
-func (tm *TaskManager) Get() []Task {
+func (tm *TaskManager) Get() ([]Task, error) {
 	var tasks []Task
-	tm.db.Order("id asc").Find(&tasks)
-	return tasks
+	if tm.db == nil {
+		return nil, fmt.Errorf("db connection is not initialized")
+	}
+
+	result := tm.db.Order("id asc").Find(&tasks)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return tasks, nil
 }
 
 func (tm *TaskManager) Remove(id int16) error {

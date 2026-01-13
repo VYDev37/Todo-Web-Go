@@ -57,14 +57,16 @@ func SendMessage(res http.ResponseWriter, status int, message string) error {
 }
 
 func (server *APIServer) HandleGetTodo(res http.ResponseWriter, req *http.Request) {
-	taskList := server.Manager.Get()
+	taskList, err := server.Manager.Get()
+
+	if err != nil {
+		SendMessage(res, 502, err.Error())
+		return
+	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(res).Encode(taskList); err != nil {
-		http.Error(res, fmt.Sprintf("Failed to retrieve data: %v.", err), http.StatusInternalServerError)
-	}
+	json.NewEncoder(res).Encode(taskList)
 }
 
 func (server *APIServer) HandleAddTodo(res http.ResponseWriter, req *http.Request) {
