@@ -62,8 +62,6 @@ func (server *APIServer) HandleGetTodo(res http.ResponseWriter, req *http.Reques
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
 
-	SendMessage(res, 200, os.Getenv("SUPABASE_URL"))
-
 	if err := json.NewEncoder(res).Encode(taskList); err != nil {
 		http.Error(res, fmt.Sprintf("Failed to retrieve data: %v.", err), http.StatusInternalServerError)
 	}
@@ -138,6 +136,7 @@ func (server *APIServer) HandleUpdateTodo(res http.ResponseWriter, req *http.Req
 func (server *APIServer) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/hello", func(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, "Hello world!")
+		fmt.Fprint(res, os.Getenv("SUPABASE_URL"))
 	})
 
 	mux.HandleFunc("GET /api/todos", server.HandleGetTodo)
