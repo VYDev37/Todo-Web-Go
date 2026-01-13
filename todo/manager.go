@@ -46,6 +46,10 @@ func (tm *TaskManager) Load() error {
 	sqlDB.SetMaxOpenConns(1)
 	sqlDB.SetMaxIdleConns(1)
 
+	if err := sqlDB.Ping(); err != nil {
+		return fmt.Errorf("database ping failed: %v", err)
+	}
+
 	if err := db.AutoMigrate(&Task{}); err != nil {
 		return fmt.Errorf("automigrate gagal: %v", err)
 	}
