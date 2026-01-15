@@ -51,7 +51,7 @@ func (tm *TaskManager) Load() error {
 	}
 
 	if err := db.AutoMigrate(&Task{}); err != nil {
-		return fmt.Errorf("automigrate gagal: %v", err)
+		return fmt.Errorf("automigrate failed: %v", err)
 	}
 
 	return nil
